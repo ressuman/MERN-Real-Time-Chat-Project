@@ -4,14 +4,14 @@ const User = require("../models/user");
 exports.signup = async (req, res) => {
   try {
     //1. Extract email and password from request body
-    const { email, password } = req.body;
+    const { firstName, lastName, email, password, profilePic } = req.body;
 
     //2. If the user already exists
     const existingUser = await User.findOne({ email });
 
     //3. If user exists, send an error response
     if (existingUser) {
-      return res.status(402).send({
+      return res.status(422).send({
         message: "User already exists.",
         success: false,
       });
@@ -22,8 +22,11 @@ exports.signup = async (req, res) => {
 
     //5. Create new user, save in DB
     const newUser = new User({
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
+      profilePic,
     });
 
     //6. Save user in DB
